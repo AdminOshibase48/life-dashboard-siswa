@@ -1,16 +1,15 @@
-// Main Application Controller
+// Main Application Controller - FIXED VERSION
 class LifeDashboard {
     constructor() {
         this.currentUser = null;
         this.currentPage = 'dashboard';
         this.isSidebarOpen = false;
-        this.init();
     }
 
     init() {
         this.setupEventListeners();
         this.checkAuthStatus();
-        this.initializeTemplates();
+        this.setupPWA();
     }
 
     setupEventListeners() {
@@ -40,6 +39,17 @@ class LifeDashboard {
 
         // Handle window resize
         window.addEventListener('resize', this.handleResize.bind(this));
+
+        // Password toggle
+        const passwordToggle = document.querySelector('.password-toggle');
+        const passwordInput = document.getElementById('password');
+        if (passwordToggle && passwordInput) {
+            passwordToggle.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                passwordToggle.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+            });
+        }
     }
 
     handleNavigation(e) {
@@ -68,8 +78,6 @@ class LifeDashboard {
             e.preventDefault();
             this.handleLogin(form);
         }
-        
-        // Add other form handlers here
     }
 
     async navigateTo(page) {
@@ -94,13 +102,14 @@ class LifeDashboard {
 
     async loadPage(page) {
         const mainContent = document.getElementById('main-content');
+        if (!mainContent) return;
         
         try {
             // Show loading state
             mainContent.innerHTML = this.getLoadingTemplate();
             
             // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 300));
             
             // Load page template
             const template = this.getPageTemplate(page);
@@ -122,6 +131,7 @@ class LifeDashboard {
             finance: this.getFinanceTemplate(),
             mood: this.getMoodTemplate(),
             chatbot: this.getChatbotTemplate(),
+            analytics: this.getAnalyticsTemplate(),
             settings: this.getSettingsTemplate(),
             help: this.getHelpTemplate()
         };
@@ -194,56 +204,6 @@ class LifeDashboard {
                         </div>
                     </div>
                 </div>
-                
-                <div class="grid grid-2" style="margin-top: 1.5rem;">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Aktivitas Terbaru</h3>
-                        </div>
-                        <div class="card-content">
-                            <div class="activity-list">
-                                <div class="activity-item">
-                                    <div class="activity-icon">💰</div>
-                                    <div class="activity-content">
-                                        <div class="activity-title">Pengeluaran Baru</div>
-                                        <div class="activity-desc">Makan siang - Rp 25.000</div>
-                                        <div class="activity-time">2 jam yang lalu</div>
-                                    </div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-icon">😊</div>
-                                    <div class="activity-content">
-                                        <div class="activity-title">Mood Diperbarui</div>
-                                        <div class="activity-desc">Dari 😐 menjadi 😊</div>
-                                        <div class="activity-time">4 jam yang lalu</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Rekomendasi Hari Ini</h3>
-                        </div>
-                        <div class="card-content">
-                            <div class="recommendation">
-                                <div class="recommendation-icon">🎵</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Musik untuk Fokus</div>
-                                    <div class="recommendation-desc">Dengarkan playlist lo-fi untuk belajar</div>
-                                </div>
-                            </div>
-                            <div class="recommendation">
-                                <div class="recommendation-icon">💡</div>
-                                <div class="recommendation-content">
-                                    <div class="recommendation-title">Tips Belajar</div>
-                                    <div class="recommendation-desc">Gunakan teknik Pomodoro</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         `;
     }
@@ -261,21 +221,21 @@ class LifeDashboard {
                         <div class="game-icon">🧩</div>
                         <h3 class="game-title">Puzzle Challenge</h3>
                         <p class="game-desc">Asah otak dengan puzzle menyenangkan</p>
-                        <button class="btn btn-primary">Main Sekarang</button>
+                        <button class="btn btn-primary" onclick="if(window.gamesManager) window.gamesManager.startGame('puzzle')">Main Sekarang</button>
                     </div>
                     
                     <div class="card game-card">
                         <div class="game-icon">🎯</div>
                         <h3 class="game-title">Memory Match</h3>
                         <p class="game-desc">Uji daya ingat Anda</p>
-                        <button class="btn btn-primary">Main Sekarang</button>
+                        <button class="btn btn-primary" onclick="if(window.gamesManager) window.gamesManager.startGame('memory')">Main Sekarang</button>
                     </div>
                     
                     <div class="card game-card">
                         <div class="game-icon">❓</div>
                         <h3 class="game-title">Quick Quiz</h3>
                         <p class="game-desc">Jawab pertanyaan secepatnya</p>
-                        <button class="btn btn-primary">Main Sekarang</button>
+                        <button class="btn btn-primary" onclick="if(window.gamesManager) window.gamesManager.startGame('quiz')">Main Sekarang</button>
                     </div>
                 </div>
             </div>
@@ -290,57 +250,52 @@ class LifeDashboard {
                     <p>Kelola dan pantau keuangan pribadi Anda</p>
                 </div>
                 
-                <div class="grid grid-2">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Saldo & Budget</h3>
-                        </div>
-                        <div class="card-content">
-                            <div class="balance-display">
-                                <div class="balance-amount">Rp 250.000</div>
-                                <div class="balance-label">Saldo Tersisa</div>
-                            </div>
-                            <div class="budget-progress">
-                                <div class="progress-item">
-                                    <div class="progress-label">Makanan</div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 75%"></div>
-                                    </div>
-                                    <div class="progress-value">75%</div>
-                                </div>
-                                <div class="progress-item">
-                                    <div class="progress-label">Transportasi</div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 40%"></div>
-                                    </div>
-                                    <div class="progress-value">40%</div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="finance-overview">
+                    <div class="overview-card income">
+                        <div class="overview-icon">💰</div>
+                        <div class="overview-value">Rp 1.250.000</div>
+                        <div class="overview-label">Pemasukan</div>
                     </div>
-                    
+                    <div class="overview-card expense">
+                        <div class="overview-icon">💸</div>
+                        <div class="overview-value">Rp 850.000</div>
+                        <div class="overview-label">Pengeluaran</div>
+                    </div>
+                    <div class="overview-card balance">
+                        <div class="overview-icon">🏦</div>
+                        <div class="overview-value">Rp 400.000</div>
+                        <div class="overview-label">Saldo</div>
+                    </div>
+                    <div class="overview-card budget">
+                        <div class="overview-icon">📊</div>
+                        <div class="overview-value">68%</div>
+                        <div class="overview-label">Budget Terpakai</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-2">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Tambah Transaksi</h3>
                         </div>
                         <div class="card-content">
                             <form id="finance-form" class="finance-form">
-                                <div class="input-group">
+                                <div class="form-group">
                                     <label>Jenis Transaksi</label>
-                                    <select class="form-select">
+                                    <select name="type" class="form-select" required>
                                         <option value="income">Uang Masuk</option>
                                         <option value="expense">Uang Keluar</option>
                                     </select>
                                 </div>
                                 
-                                <div class="input-group">
+                                <div class="form-group">
                                     <label>Jumlah</label>
-                                    <input type="number" placeholder="Rp 0" class="form-input">
+                                    <input type="number" name="amount" placeholder="Rp 0" class="form-input" required>
                                 </div>
                                 
-                                <div class="input-group">
+                                <div class="form-group">
                                     <label>Kategori</label>
-                                    <select class="form-select">
+                                    <select name="category" class="form-select" required>
                                         <option value="food">Makanan</option>
                                         <option value="transport">Transportasi</option>
                                         <option value="entertainment">Hiburan</option>
@@ -348,13 +303,28 @@ class LifeDashboard {
                                     </select>
                                 </div>
                                 
-                                <div class="input-group">
+                                <div class="form-group">
                                     <label>Keterangan</label>
-                                    <input type="text" placeholder="Deskripsi transaksi" class="form-input">
+                                    <input type="text" name="description" placeholder="Deskripsi transaksi" class="form-input" required>
                                 </div>
                                 
                                 <button type="submit" class="btn btn-primary">Simpan Transaksi</button>
                             </form>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Transaksi Terbaru</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="transaction-list" id="transaction-list">
+                                <div class="empty-state">
+                                    <div class="empty-icon">💸</div>
+                                    <div class="empty-title">Belum ada transaksi</div>
+                                    <div class="empty-desc">Tambahkan transaksi pertama Anda</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -365,42 +335,67 @@ class LifeDashboard {
     getMoodTemplate() {
         return `
             <div class="fade-in">
-                <div class="page-header">
-                    <h1>😊 Mood Tracker</h1>
-                    <p>Bagaimana perasaan Anda hari ini?</p>
-                </div>
-                
-                <div class="card">
-                    <div class="card-content">
-                        <div class="mood-selector">
-                            <div class="mood-options">
-                                <div class="mood-option" data-mood="happy">
-                                    <span class="mood-emoji">😊</span>
-                                    <span class="mood-label">Senang</span>
-                                </div>
-                                <div class="mood-option" data-mood="sad">
-                                    <span class="mood-emoji">😢</span>
-                                    <span class="mood-label">Sedih</span>
-                                </div>
-                                <div class="mood-option" data-mood="tired">
-                                    <span class="mood-emoji">😴</span>
-                                    <span class="mood-label">Lelah</span>
-                                </div>
-                                <div class="mood-option" data-mood="bored">
-                                    <span class="mood-emoji">😐</span>
-                                    <span class="mood-label">Bosan</span>
-                                </div>
-                                <div class="mood-option" data-mood="excited">
-                                    <span class="mood-emoji">🎉</span>
-                                    <span class="mood-label">Semangat</span>
+                <div class="mood-tracker">
+                    <div class="page-header">
+                        <h1>😊 Mood Tracker</h1>
+                        <p>Bagaimana perasaan Anda hari ini?</p>
+                    </div>
+                    
+                    <div class="current-mood">
+                        <div class="current-mood-emoji">😊</div>
+                        <div class="current-mood-text">Senang</div>
+                        <div class="current-mood-desc">Hari yang menyenangkan!</div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="mood-selector">
+                                <div class="mood-options">
+                                    <div class="mood-option" data-mood="happy">
+                                        <span class="mood-emoji">😊</span>
+                                        <span class="mood-label">Senang</span>
+                                    </div>
+                                    <div class="mood-option" data-mood="sad">
+                                        <span class="mood-emoji">😢</span>
+                                        <span class="mood-label">Sedih</span>
+                                    </div>
+                                    <div class="mood-option" data-mood="tired">
+                                        <span class="mood-emoji">😴</span>
+                                        <span class="mood-label">Lelah</span>
+                                    </div>
+                                    <div class="mood-option" data-mood="bored">
+                                        <span class="mood-emoji">😐</span>
+                                        <span class="mood-label">Bosan</span>
+                                    </div>
+                                    <div class="mood-option" data-mood="excited">
+                                        <span class="mood-emoji">🎉</span>
+                                        <span class="mood-label">Semangat</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="mood-recommendations hidden">
-                            <h3>Rekomendasi untuk Anda</h3>
-                            <div class="recommendation-list">
-                                <!-- Recommendations will be loaded here -->
+                            
+                            <div class="mood-intensity hidden">
+                                <label class="intensity-label">Seberapa kuat perasaan ini?</label>
+                                <input type="range" class="intensity-slider" min="1" max="5" value="3">
+                                <div class="intensity-labels">
+                                    <span>Sedikit</span>
+                                    <span>Lumayan</span>
+                                    <span>Normal</span>
+                                    <span>Cukup</span>
+                                    <span>Sangat</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mood-notes">
+                                <label class="notes-label">Catatan (opsional)</label>
+                                <textarea class="notes-textarea" placeholder="Apa yang membuat Anda merasa seperti ini?"></textarea>
+                            </div>
+                            
+                            <button class="btn btn-primary" id="save-mood">Simpan Mood</button>
+                            
+                            <div class="mood-recommendations hidden">
+                                <h3>Rekomendasi untuk Anda</h3>
+                                <div class="recommendation-list"></div>
                             </div>
                         </div>
                     </div>
@@ -428,13 +423,13 @@ class LifeDashboard {
                         </div>
                     </div>
                     
+                    <div class="quick-replies">
+                        <button class="quick-reply" data-message="Tips belajar efektif">💡 Tips Belajar</button>
+                        <button class="quick-reply" data-message="Rekomendasi musik">🎵 Rekomendasi Musik</button>
+                        <button class="quick-reply" data-message="Bantuan tugas">📚 Bantuan Tugas</button>
+                    </div>
+                    
                     <div class="chat-input-container">
-                        <div class="quick-replies">
-                            <button class="quick-reply" data-message="Tips belajar efektif">💡 Tips Belajar</button>
-                            <button class="quick-reply" data-message="Rekomendasi musik">🎵 Rekomendasi Musik</button>
-                            <button class="quick-reply" data-message="Bantuan tugas">📚 Bantuan Tugas</button>
-                        </div>
-                        
                         <div class="chat-input-group">
                             <input type="text" id="chat-input" placeholder="Ketik pesan Anda..." class="chat-input">
                             <button id="send-message" class="btn btn-primary btn-send">
@@ -447,50 +442,206 @@ class LifeDashboard {
         `;
     }
 
+    getAnalyticsTemplate() {
+        return `
+            <div class="fade-in">
+                <div class="analytics-dashboard">
+                    <div class="analytics-header">
+                        <div>
+                            <h1>📊 Analytics Dashboard</h1>
+                            <p class="subtitle">Data penggunaan dan performa aplikasi</p>
+                        </div>
+                        <div class="analytics-controls">
+                            <div class="date-filter">
+                                <label>Periode:</label>
+                                <select class="filter-select" id="period-select">
+                                    <option value="today">Hari Ini</option>
+                                    <option value="yesterday">Kemarin</option>
+                                    <option value="week">7 Hari Terakhir</option>
+                                    <option value="month">30 Hari Terakhir</option>
+                                    <option value="all">Semua Waktu</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-outline" onclick="if(window.analyticsManager) window.analyticsManager.exportAnalyticsData()">
+                                📥 Export Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card sessions">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-number" id="sessions-count">0</div>
+                            <div class="stat-label">Total Sessions</div>
+                            <div class="stat-change positive" id="sessions-change">+0%</div>
+                        </div>
+                        <div class="stat-card pageviews">
+                            <div class="stat-icon">📄</div>
+                            <div class="stat-number" id="pageviews-count">0</div>
+                            <div class="stat-label">Page Views</div>
+                            <div class="stat-change positive" id="pageviews-change">+0%</div>
+                        </div>
+                        <div class="stat-card events">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-number" id="events-count">0</div>
+                            <div class="stat-label">Events</div>
+                            <div class="stat-change positive" id="events-change">+0%</div>
+                        </div>
+                        <div class="stat-card features">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-number" id="features-count">0</div>
+                            <div class="stat-label">Features Used</div>
+                            <div class="stat-change positive" id="features-change">+0%</div>
+                        </div>
+                    </div>
+
+                    <div class="charts-container">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <div class="chart-title">Usage Trends</div>
+                                <div class="chart-actions">
+                                    <button class="btn btn-outline btn-sm">Hari</button>
+                                    <button class="btn btn-outline btn-sm">Minggu</button>
+                                    <button class="btn btn-primary btn-sm">Bulan</button>
+                                </div>
+                            </div>
+                            <div class="chart-placeholder">
+                                <div>
+                                    <div style="font-size: 3rem; margin-bottom: 1rem;">📈</div>
+                                    <div>Usage Trends Chart</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.5rem;">
+                                        Grafik tren penggunaan akan ditampilkan di sini
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <div class="chart-title">Feature Popularity</div>
+                            </div>
+                            <div class="chart-placeholder">
+                                <div>
+                                    <div style="font-size: 3rem; margin-bottom: 1rem;">🥇</div>
+                                    <div>Feature Popularity</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.5rem;">
+                                        Grafik popularitas fitur akan ditampilkan di sini
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="features-list">
+                        <h3 style="margin-bottom: 1.5rem;">🔥 Fitur Paling Populer</h3>
+                        <div id="popular-features-list">
+                            <div class="no-data">
+                                <div class="no-data-icon">📊</div>
+                                <div class="no-data-title">Belum ada data</div>
+                                <div class="no-data-desc">Gunakan aplikasi untuk melihat analytics</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="journey-container">
+                        <h3 style="margin-bottom: 1.5rem;">🧭 User Journey Terbaru</h3>
+                        <div class="journey-steps" id="recent-journey">
+                            <div class="no-data">
+                                <div class="no-data-icon">🧭</div>
+                                <div class="no-data-title">Belum ada journey</div>
+                                <div class="no-data-desc">Navigasi aplikasi untuk melihat user journey</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="errors-container">
+                        <h3 style="margin-bottom: 1.5rem;">🚨 Error Terbaru</h3>
+                        <div id="recent-errors">
+                            <div class="no-data">
+                                <div class="no-data-icon">✅</div>
+                                <div class="no-data-title">Tidak ada error</div>
+                                <div class="no-data-desc">Aplikasi berjalan dengan baik!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="privacy-controls">
+                        <div class="privacy-warning">
+                            <div class="privacy-warning-icon">🔒</div>
+                            <h4>Privasi Data</h4>
+                            <p>Data analytics disimpan secara lokal di perangkat Anda dan tidak dikirim ke server mana pun. Data digunakan hanya untuk meningkatkan pengalaman penggunaan aplikasi.</p>
+                        </div>
+                        <div class="privacy-actions">
+                            <button class="btn btn-outline" onclick="if(window.analyticsManager) window.analyticsManager.exportAnalyticsData()">
+                                📥 Export Data Analytics
+                            </button>
+                            <button class="btn btn-error" onclick="if(window.analyticsManager) window.analyticsManager.clearAnalyticsData()">
+                                🗑️ Hapus Semua Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     getSettingsTemplate() {
         return `
             <div class="fade-in">
-                <div class="page-header">
-                    <h1>⚙️ Pengaturan</h1>
-                    <p>Kelola preferensi dan akun Anda</p>
-                </div>
-                
-                <div class="grid grid-2">
-                    <div class="card">
-                        <h3 class="card-title">Profil Pengguna</h3>
-                        <form class="settings-form">
-                            <div class="input-group">
-                                <label>Nama Lengkap</label>
-                                <input type="text" value="Siswa" class="form-input">
-                            </div>
-                            <div class="input-group">
-                                <label>Email</label>
-                                <input type="email" value="siswa@example.com" class="form-input">
-                            </div>
-                            <div class="input-group">
-                                <label>Sekolah</label>
-                                <input type="text" placeholder="Nama sekolah" class="form-input">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                        </form>
+                <div class="settings-container">
+                    <div class="page-header">
+                        <h1>⚙️ Pengaturan</h1>
+                        <p>Kelola preferensi dan konfigurasi aplikasi</p>
                     </div>
-                    
-                    <div class="card">
-                        <h3 class="card-title">Preferensi</h3>
-                        <div class="preference-item">
-                            <label class="checkbox">
-                                <input type="checkbox" checked>
-                                <span class="checkmark"></span>
-                                Notifikasi email
-                            </label>
+
+                    <form id="settings-form">
+                        <div class="settings-sections">
+                            <div class="settings-section">
+                                <h3>🎨 Tampilan</h3>
+                                <div class="setting-group">
+                                    <label class="setting-label">Tema</label>
+                                    <select name="setting_theme" class="setting-input">
+                                        <option value="light">Terang</option>
+                                        <option value="dark">Gelap</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="preference-item">
-                            <label class="checkbox">
-                                <input type="checkbox" checked>
-                                <span class="checkmark"></span>
-                                Dark mode
-                            </label>
+
+                        <div class="settings-actions">
+                            <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
+                            <button type="button" class="btn btn-outline" id="reset-settings">Reset ke Default</button>
                         </div>
+                    </form>
+
+                    <div class="backup-section">
+                        <div class="backup-header">
+                            <div>
+                                <h3>💾 Backup & Restore</h3>
+                                <p style="color: var(--text-secondary); margin-top: 0.25rem;">
+                                    Kelola data dan cadangan aplikasi
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="backup-actions">
+                            <button type="button" class="btn btn-outline" id="backup-now">
+                                📥 Buat Backup
+                            </button>
+                            <button type="button" class="btn btn-outline" id="restore-backup">
+                                📤 Restore Backup
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section" style="border-color: var(--error);">
+                        <h3 style="color: var(--error);">🚨 Zona Berbahaya</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                            Tindakan ini tidak dapat dibatalkan. Hapus semua data aplikasi.
+                        </p>
+                        <button type="button" class="btn btn-error" id="clear-all-data">
+                            🗑️ Hapus Semua Data
+                        </button>
                     </div>
                 </div>
             </div>
@@ -514,10 +665,6 @@ class LifeDashboard {
                         <div class="faq-item">
                             <div class="faq-question">Apakah data saya aman?</div>
                             <div class="faq-answer">Ya, semua data disimpan secara lokal di perangkat Anda dan dienkripsi.</div>
-                        </div>
-                        <div class="faq-item">
-                            <div class="faq-question">Bagaimana cara menggunakan AI Assistant?</div>
-                            <div class="faq-answer">Pergi ke halaman AI Assistant, ketik pertanyaan Anda, atau gunakan quick replies.</div>
                         </div>
                     </div>
                 </div>
@@ -558,14 +705,23 @@ class LifeDashboard {
 
     initializePageComponents(page) {
         switch(page) {
+            case 'dashboard':
+                this.updateUserInfo();
+                break;
+            case 'finance':
+                this.initializeFinanceTracker();
+                break;
             case 'mood':
                 this.initializeMoodTracker();
                 break;
             case 'chatbot':
                 this.initializeChatbot();
                 break;
-            case 'finance':
-                this.initializeFinanceTracker();
+            case 'analytics':
+                this.initializeAnalyticsPage();
+                break;
+            case 'settings':
+                this.initializeSettingsPage();
                 break;
         }
     }
@@ -581,6 +737,19 @@ class LifeDashboard {
                 this.showMoodRecommendations(mood);
             });
         });
+
+        // Save mood button
+        const saveBtn = document.getElementById('save-mood');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', () => {
+                const selected = document.querySelector('.mood-option.selected');
+                if (selected) {
+                    alert(`Mood "${selected.querySelector('.mood-label').textContent}" disimpan!`);
+                } else {
+                    alert('Pilih mood terlebih dahulu!');
+                }
+            });
+        }
     }
 
     initializeChatbot() {
@@ -589,30 +758,36 @@ class LifeDashboard {
         const quickReplies = document.querySelectorAll('.quick-reply');
 
         const sendMessage = () => {
-            const message = chatInput.value.trim();
-            if (message) {
+            const message = chatInput?.value.trim();
+            if (message && document.getElementById('chat-messages')) {
                 this.addChatMessage(message, 'user');
-                chatInput.value = '';
+                if (chatInput) chatInput.value = '';
                 this.simulateBotResponse(message);
             }
         };
 
-        sendButton.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
+        if (sendButton) sendButton.addEventListener('click', sendMessage);
+        if (chatInput) {
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+        }
 
         quickReplies.forEach(reply => {
             reply.addEventListener('click', () => {
                 const message = reply.dataset.message;
-                this.addChatMessage(message, 'user');
-                this.simulateBotResponse(message);
+                if (document.getElementById('chat-messages')) {
+                    this.addChatMessage(message, 'user');
+                    this.simulateBotResponse(message);
+                }
             });
         });
     }
 
     addChatMessage(text, sender) {
         const messagesContainer = document.getElementById('chat-messages');
+        if (!messagesContainer) return;
+        
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message`;
         
@@ -641,10 +816,6 @@ class LifeDashboard {
                 response = "Berikut tips belajar efektif:\n1. Gunakan teknik Pomodoro (25 menit belajar, 5 menit istirahat)\n2. Buat ringkasan dengan mind mapping\n3. Ajarkan materi kepada orang lain\n4. Istirahat yang cukup";
             } else if (userMessage.toLowerCase().includes('musik')) {
                 response = "Rekomendasi musik untuk belajar:\n• Lofi hip hop\n• Musik klasik (Mozart, Beethoven)\n• Soundtrack film instrumental\n• Ambient sounds";
-            } else if (userMessage.toLowerCase().includes('tugas')) {
-                response = "Untuk bantuan tugas, coba:\n1. Break down tugas menjadi bagian kecil\n2. Buat jadwal pengerjaan\n3. Gunakan sumber seperti Khan Academy atau Ruangguru\n4. Mintalah bantuan guru atau teman";
-            } else if (userMessage.toLowerCase().includes('mood') || userMessage.toLowerCase().includes('sedih')) {
-                response = "Jika sedang tidak mood, coba:\n• Istirahat sejenak\n• Dengarkan musik favorit\n• Lakukan peregangan\n• Minum air putih\n• Bicara dengan teman atau keluarga";
             }
             
             this.addChatMessage(response, 'bot');
@@ -655,35 +826,20 @@ class LifeDashboard {
         const recommendations = {
             happy: [
                 { icon: '🎵', title: 'Musik Upbeat', desc: 'Dengarkan playlist musik yang menyenangkan' },
-                { icon: '📝', title: 'Journaling', desc: 'Tuliskan momen bahagia hari ini' },
-                { icon: '🎯', title: 'Set Goals', desc: 'Manfaatkan energi positif untuk capai target' }
+                { icon: '📝', title: 'Journaling', desc: 'Tuliskan momen bahagia hari ini' }
             ],
             sad: [
                 { icon: '🎵', title: 'Musik Relaks', desc: 'Dengarkan musik yang menenangkan' },
-                { icon: '📞', title: 'Hubungi Teman', desc: 'Berbicara dengan seseorang yang dipercaya' },
-                { icon: '🎬', title: 'Film Inspiratif', desc: 'Tonton film yang membangkitkan semangat' }
-            ],
-            tired: [
-                { icon: '💤', title: 'Istirahat', desc: 'Ambil waktu untuk tidur sebentar' },
-                { icon: '🧘', title: 'Peregangan', desc: 'Lakukan peregangan ringan' },
-                { icon: '🍵', title: 'Teh Hangat', desc: 'Minum teh herbal yang menenangkan' }
-            ],
-            bored: [
-                { icon: '🎮', title: 'Main Game', desc: 'Coba game seru di platform ini' },
-                { icon: '📚', title: 'Baca Buku', desc: 'Baca buku atau artikel menarik' },
-                { icon: '🎨', title: 'Kreatif', desc: 'Coba kegiatan seni atau kerajinan' }
-            ],
-            excited: [
-                { icon: '🎯', title: 'Channel Energy', desc: 'Fokuskan energi pada proyek atau belajar' },
-                { icon: '🏃', title: 'Olahraga', desc: 'Lakukan aktivitas fisik' },
-                { icon: '📣', title: 'Berbagi', desc: 'Bagikan semangat dengan teman' }
+                { icon: '📞', title: 'Hubungi Teman', desc: 'Berbicara dengan seseorang yang dipercaya' }
             ]
         };
 
         const container = document.querySelector('.mood-recommendations');
         const list = document.querySelector('.recommendation-list');
+        if (!container || !list) return;
         
-        list.innerHTML = recommendations[mood].map(rec => `
+        const moodRecs = recommendations[mood] || [];
+        list.innerHTML = moodRecs.map(rec => `
             <div class="recommendation-item">
                 <div class="recommendation-icon">${rec.icon}</div>
                 <div class="recommendation-content">
@@ -697,13 +853,37 @@ class LifeDashboard {
     }
 
     initializeFinanceTracker() {
-        // Initialize finance chart and form handling
         const financeForm = document.getElementById('finance-form');
         if (financeForm) {
             financeForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 alert('Transaksi berhasil disimpan!');
                 financeForm.reset();
+            });
+        }
+    }
+
+    initializeAnalyticsPage() {
+        // Basic analytics initialization
+        console.log('Analytics page loaded');
+    }
+
+    initializeSettingsPage() {
+        const settingsForm = document.getElementById('settings-form');
+        if (settingsForm) {
+            settingsForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Pengaturan disimpan!');
+            });
+        }
+
+        const clearBtn = document.getElementById('clear-all-data');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                if (confirm('Yakin hapus semua data?')) {
+                    localStorage.clear();
+                    alert('Data dihapus!');
+                }
             });
         }
     }
@@ -724,7 +904,6 @@ class LifeDashboard {
 
         // Simulate login process
         setTimeout(() => {
-            // For demo purposes, always succeed
             this.currentUser = {
                 name: 'Siswa',
                 email: email,
@@ -741,7 +920,7 @@ class LifeDashboard {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
 
-            // Update user info in header
+            // Update user info
             this.updateUserInfo();
 
             // Navigate to dashboard
@@ -792,365 +971,4 @@ class LifeDashboard {
     }
 
     handleResize() {
-        if (window.innerWidth > 768 && this.isSidebarOpen) {
-            this.closeSidebar();
-        }
-    }
-
-    checkAuthStatus() {
-        const token = localStorage.getItem('auth_token');
-        const userData = localStorage.getItem('user_data');
-
-        if (token && userData) {
-            this.currentUser = JSON.parse(userData);
-            document.getElementById('splash-screen').classList.add('hidden');
-            document.getElementById('app').classList.remove('hidden');
-            this.updateUserInfo();
-            this.navigateTo('dashboard');
-        } else {
-            // Show splash then login
-            setTimeout(() => {
-                document.getElementById('splash-screen').classList.add('hidden');
-                document.getElementById('login-screen').classList.remove('hidden');
-            }, 3000);
-        }
-    }
-
-    initializeTemplates() {
-        // Preload templates or initialize any template-related functionality
-    }
-}
-
-// Password toggle functionality
-document.addEventListener('DOMContentLoaded', () => {
-    const passwordToggle = document.querySelector('.password-toggle');
-    const passwordInput = document.getElementById('password');
-    
-    if (passwordToggle && passwordInput) {
-        passwordToggle.addEventListener('click', () => {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type');
-            passwordToggle.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
-        });
-    }
-});
-
-// Initialize app when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.app = new LifeDashboard();
-});
-
-// Dalam class LifeDashboard, tambahkan method:
-setupPWA() {
-    if (window.pwaHelper) {
-        window.pwaHelper.setupOfflineSupport();
-    }
-}
-
-// Panggil dalam init():
-init() {
-    this.setupEventListeners();
-    this.checkAuthStatus();
-    this.initializeTemplates();
-    this.setupPWA(); // Tambah ini
-}
-
-// Dalam getPageTemplate(), tambahkan:
-getPageTemplate(page) {
-    const templates = {
-        // ... existing templates ...
-        analytics: this.getAnalyticsTemplate(),
-    };
-    return templates[page] || this.getNotFoundTemplate();
-}
-
-getAnalyticsTemplate() {
-    return `
-        <div class="fade-in">
-            <!-- Content dari pages/analytics.html -->
-            ${this.getAnalyticsContent()}
-        </div>
-    `;
-}
-
-getAnalyticsContent() {
-    return `
-        <!-- Isi dari file pages/analytics.html di atas -->
-    `;
-}
-
-// Dalam initializePageComponents(), tambahkan:
-initializePageComponents(page) {
-    switch(page) {
-        // ... existing cases ...
-        case 'analytics':
-            this.initializeAnalyticsPage();
-            break;
-    }
-}
-
-initializeAnalyticsPage() {
-    if (window.analyticsManager) {
-        this.loadAnalyticsData();
-    }
-}
-
-loadAnalyticsData() {
-    // Load and display analytics data
-    const dailyStats = window.analyticsManager.getDailyStats();
-    
-    // Update stats cards
-    document.getElementById('sessions-count').textContent = dailyStats.sessions;
-    document.getElementById('pageviews-count').textContent = dailyStats.pageViews;
-    document.getElementById('events-count').textContent = dailyStats.events;
-    document.getElementById('features-count').textContent = dailyStats.uniqueFeatures;
-    
-    // Load popular features
-    this.loadPopularFeatures();
-    
-    // Load recent journey
-    this.loadRecentJourney();
-    
-    // Load recent errors
-    this.loadRecentErrors();
-}
-
-loadPopularFeatures() {
-    const popularFeatures = window.analyticsManager.getPopularFeatures(5);
-    const container = document.getElementById('popular-features-list');
-    
-    if (!container) return;
-    
-    if (popularFeatures.length === 0) {
-        container.innerHTML = `
-            <div class="no-data">
-                <div class="no-data-icon">📊</div>
-                <div class="no-data-title">Belum ada data</div>
-                <div class="no-data-desc">Gunakan aplikasi untuk melihat analytics</div>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = popularFeatures.map(feature => `
-        <div class="feature-item">
-            <div class="feature-info">
-                <div class="feature-icon">${feature.name.charAt(0).toUpperCase()}</div>
-                <div class="feature-name">${this.formatFeatureName(feature.name)}</div>
-            </div>
-            <div class="feature-stats">
-                <div class="feature-count">${feature.count}x</div>
-                <div class="feature-last-used">${new Date(feature.lastUsed).toLocaleDateString('id-ID')}</div>
-            </div>
-        </div>
-    `).join('');
-}
-
-loadRecentJourney() {
-    const recentJourney = window.analyticsManager.getUserJourney();
-    const container = document.getElementById('recent-journey');
-    
-    if (!container) return;
-    
-    if (recentJourney.length === 0) {
-        container.innerHTML = `
-            <div class="no-data">
-                <div class="no-data-icon">🧭</div>
-                <div class="no-data-title">Belum ada journey</div>
-                <div class="no-data-desc">Navigasi aplikasi untuk melihat user journey</div>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = recentJourney.map(step => `
-        <div class="journey-step">
-            <div class="step-number">${step.sequence}</div>
-            <div class="step-content">
-                <div class="step-page">${this.formatPageName(step.page)}</div>
-                <div class="step-time">${new Date(step.timestamp).toLocaleString('id-ID')}</div>
-            </div>
-        </div>
-    `).join('');
-}
-
-loadRecentErrors() {
-    const recentErrors = window.analyticsManager.analyticsData.errors.slice(-5).reverse();
-    const container = document.getElementById('recent-errors');
-    
-    if (!container) return;
-    
-    if (recentErrors.length === 0) {
-        container.innerHTML = `
-            <div class="no-data">
-                <div class="no-data-icon">✅</div>
-                <div class="no-data-title">Tidak ada error</div>
-                <div class="no-data-desc">Aplikasi berjalan dengan baik!</div>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = recentErrors.map(error => `
-        <div class="error-item">
-            <div class="error-type">${error.type}</div>
-            <div class="error-message">${error.message}</div>
-            <div class="error-meta">
-                <span>${new Date(error.timestamp).toLocaleString('id-ID')}</span>
-                ${error.filename ? `<span>File: ${error.filename}</span>` : ''}
-                ${error.lineNumber ? `<span>Line: ${error.lineNumber}</span>` : ''}
-            </div>
-        </div>
-    `).join('');
-}
-
-formatFeatureName(featureName) {
-    const names = {
-        'finance_add_transaction': 'Tambah Transaksi',
-        'finance_save_data': 'Simpan Data Keuangan',
-        'mood_track': 'Track Mood',
-        'game_start': 'Mulai Game',
-        'game_score_save': 'Simpan Score Game',
-        'chatbot_message': 'Pesan Chatbot'
-    };
-    
-    return names[featureName] || featureName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-}
-
-formatPageName(pageName) {
-    const names = {
-        'dashboard': 'Dashboard Utama',
-        'finance': 'Laporan Keuangan',
-        'mood': 'Mood Tracker',
-        'games': 'Games & Hiburan',
-        'chatbot': 'AI Assistant',
-        'analytics': 'Analytics Dashboard',
-        'settings': 'Pengaturan'
-    };
-    
-    return names[pageName] || pageName.charAt(0).toUpperCase() + pageName.slice(1);
-}
-
-// Dalam getPageTemplate(), tambahkan:
-getPageTemplate(page) {
-    const templates = {
-        // ... existing templates ...
-        settings: this.getSettingsTemplate(),
-    };
-    return templates[page] || this.getNotFoundTemplate();
-}
-
-getSettingsTemplate() {
-    return `
-        <div class="fade-in">
-            <!-- Content dari pages/settings.html -->
-            ${this.getSettingsContent()}
-        </div>
-    `;
-}
-
-getSettingsContent() {
-    return `
-        <!-- Isi dari file pages/settings.html di atas -->
-    `;
-}
-
-// Dalam initializePageComponents(), tambahkan:
-initializePageComponents(page) {
-    switch(page) {
-        // ... existing cases ...
-        case 'settings':
-            this.initializeSettingsPage();
-            break;
-    }
-}
-
-initializeSettingsPage() {
-    // Initialize settings manager jika belum ada
-    if (!window.settingsManager) {
-        window.settingsManager = new SettingsManager();
-    }
-    
-    // Load backup statistics
-    this.loadBackupStats();
-    
-    // Load app info
-    this.loadAppInfo();
-    
-    // Setup danger zone
-    this.setupDangerZone();
-}
-
-loadBackupStats() {
-    // Finance transactions
-    const financeTransactions = JSON.parse(localStorage.getItem('finance_transactions') || '[]');
-    document.getElementById('finance-count').textContent = financeTransactions.length;
-    
-    // Mood entries
-    const moodHistory = JSON.parse(localStorage.getItem('mood_history') || '[]');
-    document.getElementById('mood-count').textContent = moodHistory.length;
-    
-    // Game scores
-    const gameScores = JSON.parse(localStorage.getItem('game_scores') || '[]');
-    document.getElementById('game-count').textContent = Object.values(gameScores).flat().length;
-    
-    // Chat messages
-    const chatHistory = JSON.parse(localStorage.getItem('chat_history') || '[]');
-    document.getElementById('chat-count').textContent = chatHistory.length;
-}
-
-loadAppInfo() {
-    // Build date
-    document.getElementById('build-date').textContent = new Date().toLocaleDateString('id-ID');
-    
-    // Storage usage
-    this.calculateStorageUsage();
-    
-    // Last backup
-    const lastBackup = localStorage.getItem('last_backup_date');
-    document.getElementById('last-backup').textContent = lastBackup ? 
-        new Date(lastBackup).toLocaleDateString('id-ID') : 'Never';
-}
-
-calculateStorageUsage() {
-    let totalSize = 0;
-    for (let key in localStorage) {
-        if (localStorage.hasOwnProperty(key)) {
-            totalSize += localStorage[key].length * 2; // UTF-16 characters are 2 bytes each
-        }
-    }
-    
-    const sizeInKB = (totalSize / 1024).toFixed(2);
-    document.getElementById('storage-used').textContent = `${sizeInKB} KB`;
-}
-
-setupDangerZone() {
-    document.getElementById('clear-all-data').addEventListener('click', () => {
-        this.clearAllData();
-    });
-}
-
-clearAllData() {
-    if (confirm('⚠️ PERINGATAN: Ini akan menghapus SEMUA data aplikasi termasuk transaksi keuangan, riwayat mood, skor game, dan pengaturan. Tindakan ini TIDAK DAPAT DIBATALKAN. Apakah Anda yakin?')) {
-        if (confirm('🧨 YAKIN SEKALI? Semua data akan hilang permanen!')) {
-            // Clear all localStorage data
-            localStorage.clear();
-            
-            // Show confirmation
-            this.showNotification('Semua data berhasil dihapus. Aplikasi akan dimuat ulang.', 'success');
-            
-            // Reload the application
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
-        }
-    }
-}
-
-showNotification(message, type = 'info') {
-    if (window.financeManager && window.financeManager.showNotification) {
-        window.financeManager.showNotification(message, type);
-    } else {
-        alert(message);
-    }
-}
+        if (window.innerWidth > 768 && this
