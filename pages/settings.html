@@ -1,0 +1,100 @@
+<div class="fade-in">
+    <div class="settings-container">
+        <div class="page-header">
+            <h1>⚙️ Pengaturan</h1>
+            <p>Kelola preferensi dan konfigurasi aplikasi</p>
+        </div>
+
+        <form id="settings-form">
+            <div class="settings-sections">
+                <!-- Settings sections akan diisi oleh JavaScript -->
+            </div>
+
+            <div class="settings-actions">
+                <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
+                <button type="button" class="btn btn-outline" id="reset-settings">Reset ke Default</button>
+            </div>
+        </form>
+
+        <!-- Backup & Restore Section -->
+        <div class="backup-section">
+            <div class="backup-header">
+                <div>
+                    <h3>💾 Backup & Restore</h3>
+                    <p style="color: var(--text-secondary); margin-top: 0.25rem;">
+                        Kelola data dan cadangan aplikasi
+                    </p>
+                </div>
+            </div>
+
+            <div class="backup-actions">
+                <button type="button" class="btn btn-outline" id="backup-now">
+                    📥 Buat Backup
+                </button>
+                <button type="button" class="btn btn-outline" id="restore-backup">
+                    📤 Restore Backup
+                </button>
+            </div>
+
+            <div class="backup-info">
+                <h4 style="margin-bottom: 0.5rem;">Info Backup</h4>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+                    Backup akan menyimpan semua data termasuk transaksi keuangan, riwayat mood, skor game, dan pengaturan aplikasi.
+                </p>
+                
+                <div class="backup-stats">
+                    <div class="backup-stat">
+                        <div class="backup-stat-value" id="finance-count">0</div>
+                        <div class="backup-stat-label">Transaksi</div>
+                    </div>
+                    <div class="backup-stat">
+                        <div class="backup-stat-value" id="mood-count">0</div>
+                        <div class="backup-stat-label">Mood Entries</div>
+                    </div>
+                    <div class="backup-stat">
+                        <div class="backup-stat-value" id="game-count">0</div>
+                        <div class="backup-stat-label">Game Scores</div>
+                    </div>
+                    <div class="backup-stat">
+                        <div class="backup-stat-value" id="chat-count">0</div>
+                        <div class="backup-stat-label">Pesan Chat</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- App Info Section -->
+        <div class="settings-section">
+            <h3>ℹ️ Informasi Aplikasi</h3>
+            <div class="app-info">
+                <div class="info-item">
+                    <span class="info-label">Versi:</span>
+                    <span class="info-value">1.0.0</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Build Date:</span>
+                    <span class="info-value" id="build-date">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Storage Used:</span>
+                    <span class="info-value" id="storage-used">Calculating...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Last Backup:</span>
+                    <span class="info-value" id="last-backup">Never</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="settings-section" style="border-color: var(--error);">
+            <h3 style="color: var(--error);">🚨 Zona Berbahaya</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Tindakan ini tidak dapat dibatalkan. Hapus semua data aplikasi.
+            </p>
+            <button type="button" class="btn btn-error" id="clear-all-data">
+                🗑️ Hapus Semua Data
+            </button>
+        </div>
+    </div>
+</div>
