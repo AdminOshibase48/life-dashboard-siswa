@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Dashboard Siswa</title>
+    <title>Login - Life Dashboard Siswa</title>
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/pages/login.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Splash Screen -->
@@ -25,7 +24,7 @@
     </div>
 
     <!-- Login Screen -->
-    <div id="login-screen" class="login-container hidden">
+    <div id="login-screen" class="login-container">
         <div class="login-background">
             <div class="floating-shapes">
                 <div class="shape shape-1"></div>
@@ -63,7 +62,7 @@
                 
                 <button type="submit" class="btn btn-primary btn-login">
                     <span class="btn-text">Masuk</span>
-                    <div class="btn-loader hidden">
+                    <div class="btn-loader">
                         <div class="spinner"></div>
                     </div>
                 </button>
@@ -75,125 +74,52 @@
         </div>
     </div>
 
-    <!-- Main App -->
-    <div id="app" class="app-container hidden">
-        <!-- Navigation Header -->
-        <header class="app-header">
-            <div class="header-content">
-                <button class="menu-toggle" id="menu-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                
-                <div class="logo">
-                    <div class="logo-icon">📊</div>
-                    <span class="logo-text">Life Dashboard</span>
-                </div>
-                
-                <div class="header-actions">
-                    <button class="notification-btn">
-                        <span class="notification-icon">🔔</span>
-                        <span class="notification-badge">3</span>
-                    </button>
-                    
-                    <div class="user-profile">
-                        <div class="user-avatar">
-                            <img src="" alt="User" id="user-avatar">
-                        </div>
-                        <span class="user-name" id="user-name">Siswa</span>
-                    </div>
-                </div>
-            </div>
-        </header>
+    <script>
+        // Simple login logic untuk redirect ke dashboard
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
 
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-content">
-                <div class="nav-section">
-                    <h3 class="nav-section-title">Menu Utama</h3>
-                    <ul class="nav-menu">
-                        <li class="nav-item active">
-                            <a href="#dashboard" class="nav-link" data-page="dashboard">
-                                <span class="nav-icon">🏠</span>
-                                <span class="nav-text">Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#games" class="nav-link" data-page="games">
-                                <span class="nav-icon">🎮</span>
-                                <span class="nav-text">Games</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#finance" class="nav-link" data-page="finance">
-                                <span class="nav-icon">💰</span>
-                                <span class="nav-text">Keuangan</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#mood" class="nav-link" data-page="mood">
-                                <span class="nav-icon">😊</span>
-                                <span class="nav-text">Mood Tracker</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#chatbot" class="nav-link" data-page="chatbot">
-                                <span class="nav-icon">🤖</span>
-                                <span class="nav-text">AI Assistant</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="nav-section">
-                    <h3 class="nav-section-title">Lainnya</h3>
-                    <ul class="nav-menu">
-                        <li class="nav-item">
-                            <a href="#settings" class="nav-link" data-page="settings">
-                                <span class="nav-icon">⚙️</span>
-                                <span class="nav-text">Pengaturan</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#help" class="nav-link" data-page="help">
-                                <span class="nav-icon">❓</span>
-                                <span class="nav-text">Bantuan</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+            // Show loading
+            const btnText = document.querySelector('.btn-text');
+            const btnLoader = document.querySelector('.btn-loader');
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'block';
 
-        <!-- Main Content Area -->
-        <main class="main-content" id="main-content">
-            <!-- Dashboard content will be loaded here -->
-        </main>
+            // Simulate login process
+            setTimeout(() => {
+                // Save user data
+                const userData = {
+                    name: 'Siswa',
+                    email: email,
+                    avatar: '👤'
+                };
+                localStorage.setItem('user_data', JSON.stringify(userData));
+                if (rememberMe) {
+                    localStorage.setItem('auth_token', 'demo_token');
+                }
 
-        <!-- Mobile Bottom Navigation -->
-        <nav class="bottom-nav">
-            <a href="#dashboard" class="bottom-nav-item active" data-page="dashboard">
-                <span class="bottom-nav-icon">🏠</span>
-                <span class="bottom-nav-text">Home</span>
-            </a>
-            <a href="#games" class="bottom-nav-item" data-page="games">
-                <span class="bottom-nav-icon">🎮</span>
-                <span class="bottom-nav-text">Games</span>
-            </a>
-            <a href="#finance" class="bottom-nav-item" data-page="finance">
-                <span class="bottom-nav-icon">💰</span>
-                <span class="bottom-nav-text">Finance</span>
-            </a>
-            <a href="#mood" class="bottom-nav-item" data-page="mood">
-                <span class="bottom-nav-icon">😊</span>
-                <span class="bottom-nav-text">Mood</span>
-            </a>
-        </nav>
-    </div>
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }, 2000);
+        });
 
-    <script src="scripts/main.js"></script>
-    <script src="scripts/components/auth.js"></script>
-    <script src="scripts/utils/helpers.js"></script>
+        // Password toggle
+        document.querySelector('.password-toggle').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+
+        // Auto hide splash screen
+        setTimeout(() => {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }, 3000);
+    </script>
 </body>
 </html>
