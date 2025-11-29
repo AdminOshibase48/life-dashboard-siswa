@@ -1030,3 +1030,127 @@ formatPageName(pageName) {
     
     return names[pageName] || pageName.charAt(0).toUpperCase() + pageName.slice(1);
 }
+
+// Dalam getPageTemplate(), tambahkan:
+getPageTemplate(page) {
+    const templates = {
+        // ... existing templates ...
+        settings: this.getSettingsTemplate(),
+    };
+    return templates[page] || this.getNotFoundTemplate();
+}
+
+getSettingsTemplate() {
+    return `
+        <div class="fade-in">
+            <!-- Content dari pages/settings.html -->
+            ${this.getSettingsContent()}
+        </div>
+    `;
+}
+
+getSettingsContent() {
+    return `
+        <!-- Isi dari file pages/settings.html di atas -->
+    `;
+}
+
+// Dalam initializePageComponents(), tambahkan:
+initializePageComponents(page) {
+    switch(page) {
+        // ... existing cases ...
+        case 'settings':
+            this.initializeSettingsPage();
+            break;
+    }
+}
+
+initializeSettingsPage() {
+    // Initialize settings manager jika belum ada
+    if (!window.settingsManager) {
+        window.settingsManager = new SettingsManager();
+    }
+    
+    // Load backup statistics
+    this.loadBackupStats();
+    
+    // Load app info
+    this.loadAppInfo();
+    
+    // Setup danger zone
+    this.setupDangerZone();
+}
+
+loadBackupStats() {
+    // Finance transactions
+    const financeTransactions = JSON.parse(localStorage.getItem('finance_transactions') || '[]');
+    document.getElementById('finance-count').textContent = financeTransactions.length;
+    
+    // Mood entries
+    const moodHistory = JSON.parse(localStorage.getItem('mood_history') || '[]');
+    document.getElementById('mood-count').textContent = moodHistory.length;
+    
+    // Game scores
+    const gameScores = JSON.parse(localStorage.getItem('game_scores') || '[]');
+    document.getElementById('game-count').textContent = Object.values(gameScores).flat().length;
+    
+    // Chat messages
+    const chatHistory = JSON.parse(localStorage.getItem('chat_history') || '[]');
+    document.getElementById('chat-count').textContent = chatHistory.length;
+}
+
+loadAppInfo() {
+    // Build date
+    document.getElementById('build-date').textContent = new Date().toLocaleDateString('id-ID');
+    
+    // Storage usage
+    this.calculateStorageUsage();
+    
+    // Last backup
+    const lastBackup = localStorage.getItem('last_backup_date');
+    document.getElementById('last-backup').textContent = lastBackup ? 
+        new Date(lastBackup).toLocaleDateString('id-ID') : 'Never';
+}
+
+calculateStorageUsage() {
+    let totalSize = 0;
+    for (let key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+            totalSize += localStorage[key].length * 2; // UTF-16 characters are 2 bytes each
+        }
+    }
+    
+    const sizeInKB = (totalSize / 1024).toFixed(2);
+    document.getElementById('storage-used').textContent = `${sizeInKB} KB`;
+}
+
+setupDangerZone() {
+    document.getElementById('clear-all-data').addEventListener('click', () => {
+        this.clearAllData();
+    });
+}
+
+clearAllData() {
+    if (confirm('⚠️ PERINGATAN: Ini akan menghapus SEMUA data aplikasi termasuk transaksi keuangan, riwayat mood, skor game, dan pengaturan. Tindakan ini TIDAK DAPAT DIBATALKAN. Apakah Anda yakin?')) {
+        if (confirm('🧨 YAKIN SEKALI? Semua data akan hilang permanen!')) {
+            // Clear all localStorage data
+            localStorage.clear();
+            
+            // Show confirmation
+            this.showNotification('Semua data berhasil dihapus. Aplikasi akan dimuat ulang.', 'success');
+            
+            // Reload the application
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        }
+    }
+}
+
+showNotification(message, type = 'info') {
+    if (window.financeManager && window.financeManager.showNotification) {
+        window.financeManager.showNotification(message, type);
+    } else {
+        alert(message);
+    }
+}
