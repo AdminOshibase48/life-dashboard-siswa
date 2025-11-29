@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Life Dashboard Siswa</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/pages/dashboard.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <header class="app-header">
+            <div class="header-content">
+                <button class="menu-toggle" id="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <div class="logo">
+                    <div class="logo-icon">📊</div>
+                    <span class="logo-text">Life Dashboard</span>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="notification-btn">
+                        <span class="notification-icon">🔔</span>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <span id="user-avatar">👤</span>
+                        </div>
+                        <span class="user-name" id="user-name">Siswa</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <div class="nav-section">
+                    <h3 class="nav-section-title">Menu Utama</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item active">
+                            <a href="dashboard.html" class="nav-link">
+                                <span class="nav-icon">🏠</span>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="games.html" class="nav-link">
+                                <span class="nav-icon">🎮</span>
+                                <span class="nav-text">Games</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="finance.html" class="nav-link">
+                                <span class="nav-icon">💰</span>
+                                <span class="nav-text">Keuangan</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="mood.html" class="nav-link">
+                                <span class="nav-icon">😊</span>
+                                <span class="nav-text">Mood Tracker</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="chatbot.html" class="nav-link">
+                                <span class="nav-icon">🤖</span>
+                                <span class="nav-text">AI Assistant</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3 class="nav-section-title">Lainnya</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="analytics.html" class="nav-link">
+                                <span class="nav-icon">📊</span>
+                                <span class="nav-text">Analytics</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="settings.html" class="nav-link">
+                                <span class="nav-icon">⚙️</span>
+                                <span class="nav-text">Pengaturan</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Selamat Datang, <span id="greeting-name">Siswa</span>! 👋</h1>
+                <p class="subtitle">Ini ringkasan aktivitas Anda hari ini</p>
+            </div>
+            
+            <div class="grid grid-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💰 Keuangan</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="stat">
+                            <div class="stat-value">Rp 250.000</div>
+                            <div class="stat-label">Saldo Tersisa</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">😊 Mood Hari Ini</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="mood-display">
+                            <span class="mood-emoji">😊</span>
+                            <span class="mood-text">Senang</span>
+                        </div>
+                        <button class="btn btn-outline btn-sm" onclick="location.href='mood.html'">Update Mood</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🎯 Target Belajar</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="stat">
+                            <div class="stat-value">3/5</div>
+                            <div class="stat-label">Target Tercapai</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📅 Jadwal</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="schedule-item">
+                            <div class="schedule-time">10:00</div>
+                            <div class="schedule-title">Matematika</div>
+                        </div>
+                        <div class="schedule-item">
+                            <div class="schedule-time">14:00</div>
+                            <div class="schedule-title">Fisika</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-2" style="margin-top: 1.5rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Aktivitas Terbaru</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">💰</div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Pengeluaran Baru</div>
+                                    <div class="activity-desc">Makan siang - Rp 25.000</div>
+                                    <div class="activity-time">2 jam yang lalu</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">😊</div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Mood Diperbarui</div>
+                                    <div class="activity-desc">Dari 😐 menjadi 😊</div>
+                                    <div class="activity-time">4 jam yang lalu</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Rekomendasi Hari Ini</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="recommendation">
+                            <div class="recommendation-icon">🎵</div>
+                            <div class="recommendation-content">
+                                <div class="recommendation-title">Musik untuk Fokus</div>
+                                <div class="recommendation-desc">Dengarkan playlist lo-fi untuk belajar</div>
+                            </div>
+                        </div>
+                        <div class="recommendation">
+                            <div class="recommendation-icon">💡</div>
+                            <div class="recommendation-content">
+                                <div class="recommendation-title">Tips Belajar</div>
+                                <div class="recommendation-desc">Gunakan teknik Pomodoro</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="bottom-nav-item active">
+                <span class="bottom-nav-icon">🏠</span>
+                <span class="bottom-nav-text">Home</span>
+            </a>
+            <a href="games.html" class="bottom-nav-item">
+                <span class="bottom-nav-icon">🎮</span>
+                <span class="bottom-nav-text">Games</span>
+            </a>
+            <a href="finance.html" class="bottom-nav-item">
+                <span class="bottom-nav-icon">💰</span>
+                <span class="bottom-nav-text">Finance</span>
+            </a>
+            <a href="mood.html" class="bottom-nav-item">
+                <span class="bottom-nav-icon">😊</span>
+                <span class="bottom-nav-text">Mood</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="scripts/main.js"></script>
+    <script src="scripts/utils/helpers.js"></script>
+</body>
+</html>
