@@ -1,132 +1,412 @@
-<div class="fade-in">
-    <div class="analytics-dashboard">
-        <div class="analytics-header">
-            <div>
-                <h1>📊 Analytics Dashboard</h1>
-                <p class="subtitle">Data penggunaan dan performa aplikasi</p>
-            </div>
-            <div class="analytics-controls">
-                <div class="date-filter">
-                    <label>Periode:</label>
-                    <select class="filter-select" id="period-select">
-                        <option value="today">Hari Ini</option>
-                        <option value="yesterday">Kemarin</option>
-                        <option value="week">7 Hari Terakhir</option>
-                        <option value="month">30 Hari Terakhir</option>
-                        <option value="all">Semua Waktu</option>
-                    </select>
-                </div>
-                <button class="btn btn-outline" onclick="analyticsManager.exportAnalyticsData()">
-                    📥 Export Data
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Life Dashboard Siswa</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/pages/dashboard.css">
+    <link rel="stylesheet" href="../styles/components/analytics.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <button class="menu-toggle" id="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
-            </div>
-        </div>
-
-        <!-- Stats Overview -->
-        <div class="stats-grid">
-            <div class="stat-card sessions">
-                <div class="stat-icon">👥</div>
-                <div class="stat-number" id="sessions-count">0</div>
-                <div class="stat-label">Total Sessions</div>
-                <div class="stat-change positive" id="sessions-change">+0%</div>
-            </div>
-            <div class="stat-card pageviews">
-                <div class="stat-icon">📄</div>
-                <div class="stat-number" id="pageviews-count">0</div>
-                <div class="stat-label">Page Views</div>
-                <div class="stat-change positive" id="pageviews-change">+0%</div>
-            </div>
-            <div class="stat-card events">
-                <div class="stat-icon">🎯</div>
-                <div class="stat-number" id="events-count">0</div>
-                <div class="stat-label">Events</div>
-                <div class="stat-change positive" id="events-change">+0%</div>
-            </div>
-            <div class="stat-card features">
-                <div class="stat-icon">⚡</div>
-                <div class="stat-number" id="features-count">0</div>
-                <div class="stat-label">Features Used</div>
-                <div class="stat-change positive" id="features-change">+0%</div>
-            </div>
-        </div>
-
-        <!-- Charts Section -->
-        <div class="charts-container">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <div class="chart-title">Usage Trends</div>
-                    <div class="chart-actions">
-                        <button class="btn btn-outline btn-sm">Hari</button>
-                        <button class="btn btn-outline btn-sm">Minggu</button>
-                        <button class="btn btn-primary btn-sm">Bulan</button>
+                
+                <div class="logo">
+                    <div class="logo-icon">📊</div>
+                    <span class="logo-text">Life Dashboard</span>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="notification-btn">
+                        <span class="notification-icon">🔔</span>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <span id="user-avatar">👤</span>
+                        </div>
+                        <span class="user-name" id="user-name">Siswa</span>
                     </div>
                 </div>
-                <div class="chart-placeholder">
-                    <div>
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📈</div>
-                        <div>Usage Trends Chart</div>
-                        <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.5rem;">
-                            Grafik tren penggunaan akan ditampilkan di sini
+            </div>
+        </header>
+
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-content">
+                <div class="nav-section">
+                    <h3 class="nav-section-title">Menu Utama</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="dashboard.html" class="nav-link">
+                                <span class="nav-icon">🏠</span>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="games.html" class="nav-link">
+                                <span class="nav-icon">🎮</span>
+                                <span class="nav-text">Games</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="finance.html" class="nav-link">
+                                <span class="nav-icon">💰</span>
+                                <span class="nav-text">Keuangan</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="mood.html" class="nav-link">
+                                <span class="nav-icon">😊</span>
+                                <span class="nav-text">Mood Tracker</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="chatbot.html" class="nav-link">
+                                <span class="nav-icon">🤖</span>
+                                <span class="nav-text">AI Assistant</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3 class="nav-section-title">Lainnya</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item active">
+                            <a href="analytics.html" class="nav-link">
+                                <span class="nav-icon">📊</span>
+                                <span class="nav-text">Analytics</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="settings.html" class="nav-link">
+                                <span class="nav-icon">⚙️</span>
+                                <span class="nav-text">Pengaturan</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="fade-in">
+                <div class="analytics-dashboard">
+                    <div class="analytics-header">
+                        <div>
+                            <h1>📊 Analytics Dashboard</h1>
+                            <p class="subtitle">Data penggunaan dan performa aplikasi</p>
+                        </div>
+                        <div class="analytics-controls">
+                            <div class="date-filter">
+                                <label>Periode:</label>
+                                <select class="filter-select" id="period-select">
+                                    <option value="today">Hari Ini</option>
+                                    <option value="yesterday">Kemarin</option>
+                                    <option value="week">7 Hari Terakhir</option>
+                                    <option value="month">30 Hari Terakhir</option>
+                                    <option value="all">Semua Waktu</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-outline" onclick="analyticsManager.exportAnalyticsData()">
+                                📥 Export Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Overview -->
+                    <div class="stats-grid">
+                        <div class="stat-card sessions">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-number" id="sessions-count">0</div>
+                            <div class="stat-label">Total Sessions</div>
+                            <div class="stat-change positive" id="sessions-change">+0%</div>
+                        </div>
+                        <div class="stat-card pageviews">
+                            <div class="stat-icon">📄</div>
+                            <div class="stat-number" id="pageviews-count">0</div>
+                            <div class="stat-label">Page Views</div>
+                            <div class="stat-change positive" id="pageviews-change">+0%</div>
+                        </div>
+                        <div class="stat-card events">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-number" id="events-count">0</div>
+                            <div class="stat-label">Events</div>
+                            <div class="stat-change positive" id="events-change">+0%</div>
+                        </div>
+                        <div class="stat-card features">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-number" id="features-count">0</div>
+                            <div class="stat-label">Features Used</div>
+                            <div class="stat-change positive" id="features-change">+0%</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="charts-container">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <div class="chart-title">Usage Trends</div>
+                                <div class="chart-actions">
+                                    <button class="btn btn-outline btn-sm">Hari</button>
+                                    <button class="btn btn-outline btn-sm">Minggu</button>
+                                    <button class="btn btn-primary btn-sm">Bulan</button>
+                                </div>
+                            </div>
+                            <div class="chart-placeholder">
+                                <div>
+                                    <div style="font-size: 3rem; margin-bottom: 1rem;">📈</div>
+                                    <div>Usage Trends Chart</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.5rem;">
+                                        Grafik tren penggunaan akan ditampilkan di sini
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <div class="chart-title">Feature Popularity</div>
+                            </div>
+                            <div class="chart-placeholder">
+                                <div>
+                                    <div style="font-size: 3rem; margin-bottom: 1rem;">🥇</div>
+                                    <div>Feature Popularity</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.5rem;">
+                                        Grafik popularitas fitur akan ditampilkan di sini
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Popular Features -->
+                    <div class="features-list">
+                        <h3 style="margin-bottom: 1.5rem;">🔥 Fitur Paling Populer</h3>
+                        <div id="popular-features-list">
+                            <!-- Features will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- User Journey -->
+                    <div class="journey-container">
+                        <h3 style="margin-bottom: 1.5rem;">🧭 User Journey Terbaru</h3>
+                        <div class="journey-steps" id="recent-journey">
+                            <!-- Journey steps will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Recent Errors -->
+                    <div class="errors-container">
+                        <h3 style="margin-bottom: 1.5rem;">🚨 Error Terbaru</h3>
+                        <div id="recent-errors">
+                            <!-- Errors will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Privacy Controls -->
+                    <div class="privacy-controls">
+                        <div class="privacy-warning">
+                            <div class="privacy-warning-icon">🔒</div>
+                            <h4>Privasi Data</h4>
+                            <p>Data analytics disimpan secara lokal di perangkat Anda dan tidak dikirim ke server mana pun. Data digunakan hanya untuk meningkatkan pengalaman penggunaan aplikasi.</p>
+                        </div>
+                        <div class="privacy-actions">
+                            <button class="btn btn-outline" onclick="analyticsManager.exportAnalyticsData()">
+                                📥 Export Data Analytics
+                            </button>
+                            <button class="btn btn-error" onclick="analyticsManager.clearAnalyticsData()">
+                                🗑️ Hapus Semua Data
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
+        </main>
 
-            <div class="chart-card">
-                <div class="chart-header">
-                    <div class="chart-title">Feature Popularity</div>
-                </div>
-                <div class="chart-placeholder">
-                    <div>
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">🥇</div>
-                        <div>Feature Popularity</div>
-                        <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.5rem;">
-                            Grafik popularitas fitur akan ditampilkan di sini
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Popular Features -->
-        <div class="features-list">
-            <h3 style="margin-bottom: 1.5rem;">🔥 Fitur Paling Populer</h3>
-            <div id="popular-features-list">
-                <!-- Features will be populated by JavaScript -->
-            </div>
-        </div>
-
-        <!-- User Journey -->
-        <div class="journey-container">
-            <h3 style="margin-bottom: 1.5rem;">🧭 User Journey Terbaru</h3>
-            <div class="journey-steps" id="recent-journey">
-                <!-- Journey steps will be populated by JavaScript -->
-            </div>
-        </div>
-
-        <!-- Recent Errors -->
-        <div class="errors-container">
-            <h3 style="margin-bottom: 1.5rem;">🚨 Error Terbaru</h3>
-            <div id="recent-errors">
-                <!-- Errors will be populated by JavaScript -->
-            </div>
-        </div>
-
-        <!-- Privacy Controls -->
-        <div class="privacy-controls">
-            <div class="privacy-warning">
-                <div class="privacy-warning-icon">🔒</div>
-                <h4>Privasi Data</h4>
-                <p>Data analytics disimpan secara lokal di perangkat Anda dan tidak dikirim ke server mana pun. Data digunakan hanya untuk meningkatkan pengalaman penggunaan aplikasi.</p>
-            </div>
-            <div class="privacy-actions">
-                <button class="btn btn-outline" onclick="analyticsManager.exportAnalyticsData()">
-                    📥 Export Data Analytics
-                </button>
-                <button class="btn btn-error" onclick="analyticsManager.clearAnalyticsData()">
-                    🗑️ Hapus Semua Data
-                </button>
-            </div>
-        </div>
+        <!-- Mobile Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="bottom-nav-item">
+                <span class="bottom-nav-icon">🏠</span>
+                <span class="bottom-nav-text">Home</span>
+            </a>
+            <a href="games.html" class="bottom-nav-item">
+                <span class="bottom-nav-icon">🎮</span>
+                <span class="bottom-nav-text">Games</span>
+            </a>
+            <a href="finance.html" class="bottom-nav-item">
+                <span class="bottom-nav-icon">💰</span>
+                <span class="bottom-nav-text">Finance</span>
+            </a>
+            <a href="mood.html" class="bottom-nav-item">
+                <span class="bottom-nav-icon">😊</span>
+                <span class="bottom-nav-text">Mood</span>
+            </a>
+        </nav>
     </div>
-</div>
+
+    <script src="../scripts/main.js"></script>
+    <script src="../scripts/components/analytics.js"></script>
+    <script>
+        // Initialize analytics page when loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load analytics data
+            if (window.analyticsManager) {
+                loadAnalyticsData();
+            }
+            
+            // Setup period filter
+            document.getElementById('period-select').addEventListener('change', function() {
+                loadAnalyticsData();
+            });
+        });
+
+        function loadAnalyticsData() {
+            const period = document.getElementById('period-select').value;
+            const dailyStats = window.analyticsManager.getDailyStats();
+            
+            // Update stats cards
+            document.getElementById('sessions-count').textContent = dailyStats.sessions;
+            document.getElementById('pageviews-count').textContent = dailyStats.pageViews;
+            document.getElementById('events-count').textContent = dailyStats.events;
+            document.getElementById('features-count').textContent = dailyStats.uniqueFeatures;
+            
+            // Load popular features
+            loadPopularFeatures();
+            
+            // Load recent journey
+            loadRecentJourney();
+            
+            // Load recent errors
+            loadRecentErrors();
+        }
+
+        function loadPopularFeatures() {
+            const popularFeatures = window.analyticsManager.getPopularFeatures(5);
+            const container = document.getElementById('popular-features-list');
+            
+            if (!container) return;
+            
+            if (popularFeatures.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <div class="no-data-icon">📊</div>
+                        <div class="no-data-title">Belum ada data</div>
+                        <div class="no-data-desc">Gunakan aplikasi untuk melihat analytics</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = popularFeatures.map(feature => `
+                <div class="feature-item">
+                    <div class="feature-info">
+                        <div class="feature-icon">${feature.name.charAt(0).toUpperCase()}</div>
+                        <div class="feature-name">${formatFeatureName(feature.name)}</div>
+                    </div>
+                    <div class="feature-stats">
+                        <div class="feature-count">${feature.count}x</div>
+                        <div class="feature-last-used">${new Date(feature.lastUsed).toLocaleDateString('id-ID')}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadRecentJourney() {
+            const recentJourney = window.analyticsManager.getUserJourney();
+            const container = document.getElementById('recent-journey');
+            
+            if (!container) return;
+            
+            if (recentJourney.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <div class="no-data-icon">🧭</div>
+                        <div class="no-data-title">Belum ada journey</div>
+                        <div class="no-data-desc">Navigasi aplikasi untuk melihat user journey</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = recentJourney.slice(-5).reverse().map(step => `
+                <div class="journey-step">
+                    <div class="step-number">${step.sequence}</div>
+                    <div class="step-content">
+                        <div class="step-page">${formatPageName(step.page)}</div>
+                        <div class="step-time">${new Date(step.timestamp).toLocaleString('id-ID')}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadRecentErrors() {
+            const recentErrors = window.analyticsManager.analyticsData.errors.slice(-5).reverse();
+            const container = document.getElementById('recent-errors');
+            
+            if (!container) return;
+            
+            if (recentErrors.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <div class="no-data-icon">✅</div>
+                        <div class="no-data-title">Tidak ada error</div>
+                        <div class="no-data-desc">Aplikasi berjalan dengan baik!</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = recentErrors.map(error => `
+                <div class="error-item">
+                    <div class="error-type">${error.type}</div>
+                    <div class="error-message">${error.message}</div>
+                    <div class="error-meta">
+                        <span>${new Date(error.timestamp).toLocaleString('id-ID')}</span>
+                        ${error.filename ? `<span>File: ${error.filename}</span>` : ''}
+                        ${error.lineNumber ? `<span>Line: ${error.lineNumber}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function formatFeatureName(featureName) {
+            const names = {
+                'finance_add_transaction': 'Tambah Transaksi',
+                'finance_save_data': 'Simpan Data Keuangan',
+                'mood_track': 'Track Mood',
+                'game_start': 'Mulai Game',
+                'game_score_save': 'Simpan Score Game',
+                'chatbot_message': 'Pesan Chatbot'
+            };
+            
+            return names[featureName] || featureName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        function formatPageName(pageName) {
+            const names = {
+                'dashboard': 'Dashboard Utama',
+                'finance': 'Laporan Keuangan',
+                'mood': 'Mood Tracker',
+                'games': 'Games & Hiburan',
+                'chatbot': 'AI Assistant',
+                'analytics': 'Analytics Dashboard',
+                'settings': 'Pengaturan'
+            };
+            
+            return names[pageName] || pageName.charAt(0).toUpperCase() + pageName.slice(1);
+        }
+    </script>
+</body>
+</html>
