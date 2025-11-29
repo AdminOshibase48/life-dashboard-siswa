@@ -854,3 +854,179 @@ init() {
     this.initializeTemplates();
     this.setupPWA(); // Tambah ini
 }
+
+// Dalam getPageTemplate(), tambahkan:
+getPageTemplate(page) {
+    const templates = {
+        // ... existing templates ...
+        analytics: this.getAnalyticsTemplate(),
+    };
+    return templates[page] || this.getNotFoundTemplate();
+}
+
+getAnalyticsTemplate() {
+    return `
+        <div class="fade-in">
+            <!-- Content dari pages/analytics.html -->
+            ${this.getAnalyticsContent()}
+        </div>
+    `;
+}
+
+getAnalyticsContent() {
+    return `
+        <!-- Isi dari file pages/analytics.html di atas -->
+    `;
+}
+
+// Dalam initializePageComponents(), tambahkan:
+initializePageComponents(page) {
+    switch(page) {
+        // ... existing cases ...
+        case 'analytics':
+            this.initializeAnalyticsPage();
+            break;
+    }
+}
+
+initializeAnalyticsPage() {
+    if (window.analyticsManager) {
+        this.loadAnalyticsData();
+    }
+}
+
+loadAnalyticsData() {
+    // Load and display analytics data
+    const dailyStats = window.analyticsManager.getDailyStats();
+    
+    // Update stats cards
+    document.getElementById('sessions-count').textContent = dailyStats.sessions;
+    document.getElementById('pageviews-count').textContent = dailyStats.pageViews;
+    document.getElementById('events-count').textContent = dailyStats.events;
+    document.getElementById('features-count').textContent = dailyStats.uniqueFeatures;
+    
+    // Load popular features
+    this.loadPopularFeatures();
+    
+    // Load recent journey
+    this.loadRecentJourney();
+    
+    // Load recent errors
+    this.loadRecentErrors();
+}
+
+loadPopularFeatures() {
+    const popularFeatures = window.analyticsManager.getPopularFeatures(5);
+    const container = document.getElementById('popular-features-list');
+    
+    if (!container) return;
+    
+    if (popularFeatures.length === 0) {
+        container.innerHTML = `
+            <div class="no-data">
+                <div class="no-data-icon">📊</div>
+                <div class="no-data-title">Belum ada data</div>
+                <div class="no-data-desc">Gunakan aplikasi untuk melihat analytics</div>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = popularFeatures.map(feature => `
+        <div class="feature-item">
+            <div class="feature-info">
+                <div class="feature-icon">${feature.name.charAt(0).toUpperCase()}</div>
+                <div class="feature-name">${this.formatFeatureName(feature.name)}</div>
+            </div>
+            <div class="feature-stats">
+                <div class="feature-count">${feature.count}x</div>
+                <div class="feature-last-used">${new Date(feature.lastUsed).toLocaleDateString('id-ID')}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+loadRecentJourney() {
+    const recentJourney = window.analyticsManager.getUserJourney();
+    const container = document.getElementById('recent-journey');
+    
+    if (!container) return;
+    
+    if (recentJourney.length === 0) {
+        container.innerHTML = `
+            <div class="no-data">
+                <div class="no-data-icon">🧭</div>
+                <div class="no-data-title">Belum ada journey</div>
+                <div class="no-data-desc">Navigasi aplikasi untuk melihat user journey</div>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = recentJourney.map(step => `
+        <div class="journey-step">
+            <div class="step-number">${step.sequence}</div>
+            <div class="step-content">
+                <div class="step-page">${this.formatPageName(step.page)}</div>
+                <div class="step-time">${new Date(step.timestamp).toLocaleString('id-ID')}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+loadRecentErrors() {
+    const recentErrors = window.analyticsManager.analyticsData.errors.slice(-5).reverse();
+    const container = document.getElementById('recent-errors');
+    
+    if (!container) return;
+    
+    if (recentErrors.length === 0) {
+        container.innerHTML = `
+            <div class="no-data">
+                <div class="no-data-icon">✅</div>
+                <div class="no-data-title">Tidak ada error</div>
+                <div class="no-data-desc">Aplikasi berjalan dengan baik!</div>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = recentErrors.map(error => `
+        <div class="error-item">
+            <div class="error-type">${error.type}</div>
+            <div class="error-message">${error.message}</div>
+            <div class="error-meta">
+                <span>${new Date(error.timestamp).toLocaleString('id-ID')}</span>
+                ${error.filename ? `<span>File: ${error.filename}</span>` : ''}
+                ${error.lineNumber ? `<span>Line: ${error.lineNumber}</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+formatFeatureName(featureName) {
+    const names = {
+        'finance_add_transaction': 'Tambah Transaksi',
+        'finance_save_data': 'Simpan Data Keuangan',
+        'mood_track': 'Track Mood',
+        'game_start': 'Mulai Game',
+        'game_score_save': 'Simpan Score Game',
+        'chatbot_message': 'Pesan Chatbot'
+    };
+    
+    return names[featureName] || featureName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+
+formatPageName(pageName) {
+    const names = {
+        'dashboard': 'Dashboard Utama',
+        'finance': 'Laporan Keuangan',
+        'mood': 'Mood Tracker',
+        'games': 'Games & Hiburan',
+        'chatbot': 'AI Assistant',
+        'analytics': 'Analytics Dashboard',
+        'settings': 'Pengaturan'
+    };
+    
+    return names[pageName] || pageName.charAt(0).toUpperCase() + pageName.slice(1);
+}
