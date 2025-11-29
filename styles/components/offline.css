@@ -1,0 +1,278 @@
+/* Offline Mode Styles */
+.offline-mode {
+    filter: grayscale(0.3);
+    opacity: 0.9;
+}
+
+.offline-banner {
+    background: var(--warning);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-weight: 500;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    animation: slideDown 0.3s ease;
+}
+
+.offline-banner .banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Sync status animations */
+.sync-pulse {
+    animation: syncPulse 2s infinite;
+}
+
+@keyframes syncPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+/* Offline forms */
+.form-offline {
+    position: relative;
+}
+
+.form-offline::after {
+    content: '💾 Disimpan offline';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--warning);
+    color: var(--text-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    animation: bounceIn 0.5s ease;
+}
+
+/* Data management section */
+.data-management {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border: 2px solid var(--border);
+}
+
+.data-management h3 {
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.data-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.data-action {
+    flex: 1;
+    min-width: 200px;
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--background);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.data-action:hover {
+    border-color: var(--primary);
+    background: var(--surface);
+    transform: translateY(-2px);
+}
+
+.data-action-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.data-action-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.data-action-desc {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Import/Export modals */
+.data-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.data-modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+.modal-close:hover {
+    background: var(--border-light);
+    color: var(--text-primary);
+}
+
+.file-dropzone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 1.5rem 0;
+}
+
+.file-dropzone:hover {
+    border-color: var(--primary);
+    background: var(--background);
+}
+
+.file-dropzone.dragover {
+    border-color: var(--primary);
+    background: rgba(67, 97, 238, 0.05);
+}
+
+.file-dropzone-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.file-info {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--background);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+}
+
+.file-info.success {
+    border-left: 4px solid var(--success);
+}
+
+.file-info.error {
+    border-left: 4px solid var(--error);
+}
+
+/* Progress bars */
+.import-progress {
+    margin: 1.5rem 0;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Responsive offline styles */
+@media (max-width: 768px) {
+    .offline-banner {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .data-actions {
+        flex-direction: column;
+    }
+    
+    .data-action {
+        min-width: auto;
+    }
+    
+    .modal-content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .file-dropzone {
+        padding: 1.5rem 1rem;
+    }
+    
+    .file-dropzone-icon {
+        font-size: 2rem;
+    }
+}
+
+/* Animation for sync completion */
+@keyframes syncComplete {
+    0% {
+        transform: scale(1);
+        background: var(--warning);
+    }
+    50% {
+        transform: scale(1.1);
+        background: var(--success);
+    }
+    100% {
+        transform: scale(1);
+        background: var(--success);
+    }
+}
+
+.sync-complete {
+    animation: syncComplete 0.5s ease;
+}
