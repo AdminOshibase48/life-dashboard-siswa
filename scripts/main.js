@@ -839,3 +839,18 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new LifeDashboard();
 });
+
+// Dalam class LifeDashboard, tambahkan method:
+setupPWA() {
+    if (window.pwaHelper) {
+        window.pwaHelper.setupOfflineSupport();
+    }
+}
+
+// Panggil dalam init():
+init() {
+    this.setupEventListeners();
+    this.checkAuthStatus();
+    this.initializeTemplates();
+    this.setupPWA(); // Tambah ini
+}
