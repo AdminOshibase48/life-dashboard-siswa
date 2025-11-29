@@ -1,0 +1,184 @@
+/* Enhanced Notification System */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+}
+
+.notification {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.5rem;
+    box-shadow: var(--shadow-lg);
+    animation: slideInRight 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border-left: 4px solid var(--primary);
+}
+
+.notification::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--primary);
+    animation: progressBar 3s linear;
+}
+
+.notification-success {
+    border-left-color: var(--success);
+}
+
+.notification-success::before {
+    background: var(--success);
+}
+
+.notification-error {
+    border-left-color: var(--error);
+}
+
+.notification-error::before {
+    background: var(--error);
+}
+
+.notification-warning {
+    border-left-color: var(--warning);
+}
+
+.notification-warning::before {
+    background: var(--warning);
+}
+
+.notification-info {
+    border-left-color: var(--primary);
+}
+
+.notification-info::before {
+    background: var(--primary);
+}
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.notification-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.notification-message {
+    flex: 1;
+    color: var(--text-primary);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-light);
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    margin-top: -2px;
+}
+
+.notification-close:hover {
+    background: var(--border-light);
+    color: var(--text-primary);
+}
+
+/* Progress bar animation */
+@keyframes progressBar {
+    0% { width: 100%; }
+    100% { width: 0%; }
+}
+
+/* Entrance and exit animations */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.notification.exiting {
+    animation: slideOutRight 0.3s ease;
+}
+
+/* Responsive notifications */
+@media (max-width: 768px) {
+    .notification-container {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .notification {
+        padding: 1rem;
+    }
+}
+
+/* Toast variants */
+.notification.toast {
+    border-radius: 25px;
+    padding: 0.75rem 1.25rem;
+}
+
+.notification.toast .notification-content {
+    align-items: center;
+}
+
+.notification.toast .notification-icon {
+    margin-top: 0;
+}
+
+/* Banner notification */
+.notification.banner {
+    border-radius: 0;
+    border-left: none;
+    border-top: 3px solid var(--primary);
+}
+
+.notification.banner::before {
+    display: none;
+}
+
+/* Stacked notifications */
+.notification-container.stacked .notification {
+    margin-bottom: -20px;
+    transform: scale(0.95);
+}
+
+.notification-container.stacked .notification:first-child {
+    margin-bottom: 10px;
+    transform: scale(1);
+}
