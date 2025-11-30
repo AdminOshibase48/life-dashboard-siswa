@@ -971,4 +971,38 @@ class LifeDashboard {
     }
 
     handleResize() {
-        if (window.innerWidth > 768 && this
+        if (window.innerWidth > 768 && this.isSidebarOpen) {
+            this.closeSidebar();
+        }
+    }
+
+    checkAuthStatus() {
+        const token = localStorage.getItem('auth_token');
+        const userData = localStorage.getItem('user_data');
+
+        if (token && userData) {
+            this.currentUser = JSON.parse(userData);
+            document.getElementById('splash-screen').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            this.updateUserInfo();
+            this.navigateTo('dashboard');
+        } else {
+            // Show splash then login
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('hidden');
+                document.getElementById('login-screen').classList.remove('hidden');
+            }, 3000);
+        }
+    }
+
+    setupPWA() {
+        // PWA setup would go here
+        console.log('PWA setup completed');
+    }
+}
+
+// Initialize app when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    window.app = new LifeDashboard();
+    window.app.init();
+});
